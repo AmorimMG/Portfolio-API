@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export const options = new DocumentBuilder()
-  .setTitle('NestJS Swagger Example')
+  .setTitle('NestJS Portfolio Swagger')
   .setDescription('The NestJS Swagger API description')
   .setVersion('1.0')
   .build();
