@@ -11,7 +11,7 @@ export class SpotifyController {
 
   @ApiOperation({ summary: 'Receives Spotify Data' })
   @ApiResponse({ status: 200, description: 'Returns Data from Spotify.' })
-  @Get('data')
+  @Get()
   async getSpotifyData(): Promise<any> {
     try {
       const accessToken = await this.spotifyService.getAccessToken();
