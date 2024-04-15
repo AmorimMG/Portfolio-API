@@ -12,6 +12,9 @@ import { LastFMController } from './lastFM/lastfm.controller';
 import { LastFMService } from './lastFM/lastfm.service';
 import { SteamController } from './steam/steam.controller';
 import { SteamService } from './steam/steam.service';
+import { AnilistService } from './anilist/anilist.service';
+import { AnilistController } from './anilist/anilist.controller';
+
 @Module({
   imports: [ConfigModule.forRoot()],
   controllers: [
@@ -21,6 +24,7 @@ import { SteamService } from './steam/steam.service';
     DiscordController,
     LastFMController,
     SteamController,
+    AnilistController,
   ],
   providers: [
     AppService,
@@ -29,6 +33,7 @@ import { SteamService } from './steam/steam.service';
     DiscordService,
     LastFMService,
     SteamService,
+    AnilistService,
   ],
 })
 export class AppModule {}

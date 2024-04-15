@@ -10,10 +10,11 @@ export class SpotifyService {
     try {
       const clientId = this.configService.get<string>('SPOTIFY_CLIENT_ID');
       const clientSecret = this.configService.get<string>('SPOTIFY_SECRET');
+      const redirect_uri = 'localhost:4000';
 
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
-        `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}&scope=user-read-recently-played`,
+        `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}&scope=user-read-currently-playing%20user-read-recently-played&redirect_uri=${redirect_uri}`,
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -36,7 +37,7 @@ export class SpotifyService {
   async getCurrentTrack(accessToken: string): Promise<any | null> {
     try {
       const response = await axios.get(
-        'https://api.spotify.com/v1/me/player/currently-playing?market=BR',
+        'https://api.spotify.com/v1/me/player/currently-playing',
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
