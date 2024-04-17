@@ -14,13 +14,10 @@ export class SpotifyController {
   @Get()
   async getSpotifyData(): Promise<any> {
     try {
-      const accessToken = await this.spotifyService.getAccessToken();
-      const currentTrack =
-        await this.spotifyService.getCurrentTrack(accessToken);
-      const lastTrack = await this.spotifyService.getLastTrack(accessToken);
+      const currentTrack = await this.spotifyService.getCurrentTrack();
+      const lastTrack = await this.spotifyService.getLastTrack();
 
       const aggregatedData = {
-        accessToken,
         currentTrack,
         lastTrack,
       };
@@ -30,5 +27,14 @@ export class SpotifyController {
       console.error('Error fetching Spotify data:', error);
       throw error;
     }
+  }
+  @ApiOperation({ summary: 'Receives Spotify Refresh Token' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns Refresh Token from Spotify.',
+  })
+  @Get('/refresh_token')
+  async refreshToken(): Promise<any> {
+    return this.spotifyService.refreshAccessToken();
   }
 }

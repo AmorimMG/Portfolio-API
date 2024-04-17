@@ -34,8 +34,44 @@ export class SpotifyService {
     }
   }
 
-  async getCurrentTrack(accessToken: string): Promise<any | null> {
+  async refreshAccessToken(): Promise<string | null> {
     try {
+      const clientId = this.configService.get<string>('SPOTIFY_CLIENT_ID');
+      const clientSecret = this.configService.get<string>('SPOTIFY_SECRET');
+      const refreshToken = this.configService.get<string>(
+        'SPOTIFY_REFRESH_TOKEN',
+      );
+
+      const authOptions = {
+        url: 'https://accounts.spotify.com/api/token',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+        },
+        data: `grant_type=refresh_token&refresh_token=${refreshToken}`,
+      };
+
+      const response = await axios.post(authOptions.url, authOptions.data, {
+        headers: authOptions.headers,
+      });
+
+      if (response.data && response.data.access_token) {
+        return response.data.access_token;
+      } else {
+        console.error('Failed to refresh access token');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error refreshing access token:', error);
+      return null;
+    }
+  }
+
+  async getCurrentTrack(): Promise<any | null> {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return null;
+
       const response = await axios.get(
         'https://api.spotify.com/v1/me/player/currently-playing',
         {
@@ -61,8 +97,11 @@ export class SpotifyService {
     }
   }
 
-  async getLastTrack(accessToken: string): Promise<any | null> {
+  async getLastTrack(): Promise<any | null> {
     try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return null;
+
       const response = await axios.get(
         'https://api.spotify.com/v1/me/player/recently-played',
         {
@@ -93,6 +132,21 @@ export class SpotifyService {
     } catch (error) {
       console.error('Error fetching last track:', error);
       return null;
+    }
+  }
+
+  async getCurrentAndLastTrack(): Promise<{
+    currentTrack: any | null;
+    lastTrack: any | null;
+  }> {
+    try {
+      const currentTrack = await this.getCurrentTrack();
+      const lastTrack = await this.getLastTrack();
+
+      return { currentTrack, lastTrack };
+    } catch (error) {
+      console.error('Error fetching current and last tracks:', error);
+      return { currentTrack: null, lastTrack: null };
     }
   }
 }
