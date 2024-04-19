@@ -86,6 +86,8 @@ export class SpotifyService {
           name: response.data.item.name,
           artist: response.data.item.artists[0].name,
           album: response.data.item.album.name,
+          images: response.data.item.album.images,
+          href: response.data.item.external_urls.spotify,
         };
       } else {
         console.error('Failed to fetch current track from Spotify API');
@@ -124,6 +126,8 @@ export class SpotifyService {
           name: lastItem.name,
           artist: lastItem.artists[0].name,
           album: lastItem.album.name,
+          images: lastItem.album.images,
+          href: lastItem.external_urls.spotify,
         };
       } else {
         console.error('Failed to fetch last track from Spotify API');
