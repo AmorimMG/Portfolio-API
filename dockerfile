@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY .env /app/.env
 
 # Install dependencies
-RUN npm install
+RUN npm install --production
 
 # Copy all files from the current directory to the container
 COPY . .
@@ -22,4 +22,4 @@ RUN npm run build
 EXPOSE 4000
 
 # Define the command to run your app
-CMD ["npm", "run", "dev"]
+CMD ["npm", "run", "start:prod"]
