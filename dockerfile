@@ -1,25 +1,31 @@
-# Use an official Node.js runtime as the base image
-FROM node:18
+FROM node:20-alpine as builder
 
-# Set the working directory in the container
-WORKDIR /app
+ENV NODE_ENV build
 
-# Copy package.json and package-lock.json (if available)
+USER node
+WORKDIR /home/node
+
 COPY package*.json ./
+RUN npm ci
 
-COPY .env /app/.env
+COPY --chown=node:node . .
+RUN npx prisma generate \
+    && npm run build \
+    && npm prune --omit=dev
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# ---
 
-# Copy all files from the current directory to the container
-COPY . .
+FROM node:20-alpine
 
-# Build Vue application
-RUN npm run build
+ENV NODE_ENV production
 
-# Expose the port the app runs on
+USER node
+WORKDIR /home/node
+
 EXPOSE 4000
 
-# Define the command to run your app
-CMD ["npm", "run", "start:prod"]
+COPY --from=builder --chown=node:node /home/node/package*.json ./
+COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
+COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
+
+CMD ["node", "dist/server.js"]
