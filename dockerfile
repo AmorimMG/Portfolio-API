@@ -10,7 +10,7 @@ COPY package*.json ./
 COPY .env /app/.env
 
 # Install dependencies
-RUN npm install --production
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy all files from the current directory to the container
 COPY . .
