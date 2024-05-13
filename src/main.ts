@@ -10,6 +10,12 @@ async function bootstrap() {
   const port = configService.get<number>('PORT');
 
   setupSwagger(app);
+
+    // Enable CORS with specific origin
+    app.enableCors({
+      origin: 'https://amorim.pro'
+    });
+  
   await app.listen(port);
 }
 bootstrap();
