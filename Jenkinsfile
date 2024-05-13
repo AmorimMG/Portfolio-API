@@ -27,7 +27,7 @@ pipeline {
             stage('Docker Build Image') {
                 steps {
                     script {
-                        docker.build(REGISTRY, "-f Dockerfile --target production . -t $REGISTRY:$DOCKER_TAG")
+                        docker.build(REGISTRY, "-f Dockerfile . -t $REGISTRY:$DOCKER_TAG")
                     }
                 }
             }
