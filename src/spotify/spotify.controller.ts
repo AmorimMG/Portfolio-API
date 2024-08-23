@@ -5,9 +5,7 @@ import { SpotifyService } from './spotify.service';
 @ApiTags('spotify')
 @Controller('spotify')
 export class SpotifyController {
-  constructor(private spotifyService: SpotifyService) {
-    console.log('teste');
-  }
+  constructor(private spotifyService: SpotifyService) {}
 
   @ApiOperation({ summary: 'Receives Spotify Data' })
   @ApiResponse({ status: 200, description: 'Returns Data from Spotify.' })

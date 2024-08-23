@@ -13,7 +13,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   options: {
     encrypt: false, // MSSQL-specific option
     enableArithAbort: true,
-    trustServerCertificate: true, // Use only for development purposes
     connectTimeout: 30000, // Increase connection timeout to 30 seconds
   },
   entities: [__dirname + '/../**/*.entity{.ts,.js}'],

@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { HttpModule } from '@nestjs/axios';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from './config/typeorm.config';
+import { typeOrmConfig } from './config/typeorm.dev';
 
+import { ConfigModule } from '@nestjs/config';
+import { AuthModule } from './auth/auth.module';
 import { UsuarioModule } from './usuarios/usuario.module';
+import { ProjetoModule } from './projetos/projetos.module';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
 import { MailController } from './mail/mail.controller';
 import { MailService } from './mail/mail.service';
 import { SpotifyController } from './spotify/spotify.controller';
@@ -25,10 +27,12 @@ import { GithubController } from './github/github.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(), 
-    HttpModule, 
+    ConfigModule.forRoot(),
+    HttpModule,
     TypeOrmModule.forRoot(typeOrmConfig),
-    UsuarioModule
+    AuthModule,
+    UsuarioModule,
+    ProjetoModule,
   ],
   controllers: [
     AppController,
