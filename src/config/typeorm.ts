@@ -10,6 +10,4 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	entities: [__dirname + "/../**/*.entity{.ts,.js}"],
-	//synchronize: true, // Em produção, é melhor desabilitar isso
-	synchronize: true, // Em produção, é melhor desabilitar isso
 };
