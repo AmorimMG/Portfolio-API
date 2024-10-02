@@ -10,4 +10,5 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	useNewUrlParser: true,
 	useUnifiedTopology: true,
 	entities: [__dirname + "/../**/*.entity{.ts,.js}"],
+	ssl: true,
 };
