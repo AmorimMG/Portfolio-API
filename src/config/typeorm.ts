@@ -12,6 +12,6 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
 	ssl: true, // SSL is already implicitly enabled with MongoDB Atlas
 	logging: true, 
 	synchronize: true, // Em produção, é melhor desabilitar isso
-	connectTimeoutMS: 10000,  // Increase timeout to 10 seconds
-	socketTimeoutMS: 45000,  // Increase socket timeout to 45 seconds
+	connectTimeoutMS: 200000,  // Increase timeout to 10 seconds
+	socketTimeoutMS: 450000,  // Increase socket timeout to 45 seconds
 };
