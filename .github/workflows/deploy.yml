@@ -37,6 +37,6 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "gabrielamor-portfolio-a-35"
-          entrypoint: "src\main.ts"
+          project: "amorim"
+          entrypoint: "src/main.ts"
           root: ""
