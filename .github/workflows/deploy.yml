@@ -38,5 +38,5 @@ jobs:
         uses: denoland/deployctl@v1
         with:
           project: "gabrielamor-portfolio-a-35"
-          entrypoint: "main.ts"
+          entrypoint: "src\main.ts"
           root: ""
