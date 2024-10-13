@@ -1,9 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 
-@Entity('projetos')
+@Entity('Projetos')
 export class Projeto {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @ObjectIdColumn()
+  id: ObjectId;
 
   @Column()
   img: string;
@@ -16,4 +16,7 @@ export class Projeto {
 
   @Column()
   description: string;
+  
+  @Column()
+  link: string;
 }

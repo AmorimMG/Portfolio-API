@@ -1,5 +1,5 @@
-import { IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class ProjetoDto {
   @ApiProperty({ example: 'img/local/example' })
@@ -14,7 +14,11 @@ export class ProjetoDto {
   @IsString()
   subtitle: string;
 
-  @ApiProperty({ example: 'lorem ipsum' })
+  @ApiProperty({ example: 'description' })
   @IsString()
   description: string;
+
+  @ApiProperty({ example: 'http://amorim.pro' })
+  @IsString()
+  link: string;
 }

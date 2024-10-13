@@ -14,7 +14,7 @@ export class ProjetoService {
     return this.projetoRepository.find();
   }
 
-  findOne(id: number): Promise<Projeto> {
+  findOne(id: any): Promise<Projeto> {
     return this.projetoRepository.findOneBy({ id });
   }
 
