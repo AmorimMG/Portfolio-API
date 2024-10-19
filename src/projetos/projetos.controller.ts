@@ -40,6 +40,14 @@ export class ProjetoController {
     return this.projetoService.create(projeto);
   }
 
+  @ApiOperation({ summary: 'Update Project' })
+  @ApiResponse({ status: 200, description: 'Update a Project.' })
+  @Post(':id')
+  @ApiBody({ type: ProjetoDto })
+  update(@Param('id') id: number, @Body() projeto: Projeto): Promise<Projeto> {
+    return this.projetoService.update(id, projeto);
+  }
+
   @ApiOperation({ summary: 'Delete Project by Id' })
   @ApiResponse({ status: 200, description: 'Delete a Project.' })
   @Delete(':id')
