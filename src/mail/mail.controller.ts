@@ -1,7 +1,7 @@
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { Controller, Post, Body } from '@nestjs/common';
-import { MailService } from './mail.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { EmailDto } from './email.dto';
+import { MailService } from './mail.service';
 
 @ApiTags('mail')
 @Controller('mail')

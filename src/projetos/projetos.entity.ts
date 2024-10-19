@@ -16,7 +16,7 @@ export class Projeto {
 
   @Column()
   description: string;
-  
+
   @Column()
   link: string;
 }
