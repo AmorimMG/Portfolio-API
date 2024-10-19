@@ -42,7 +42,7 @@ export class ProjetoController {
 
   @ApiOperation({ summary: 'Update Project' })
   @ApiResponse({ status: 200, description: 'Update a Project.' })
-  @Post(':id')
+  @Put(':id')
   @ApiBody({ type: ProjetoDto })
   update(@Param('id') id: number, @Body() projeto: Projeto): Promise<Projeto> {
     return this.projetoService.update(id, projeto);
@@ -53,13 +53,5 @@ export class ProjetoController {
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
     return this.projetoService.remove(+id);
-  }
-
-  @ApiOperation({ summary: 'Update Project' })
-  @ApiResponse({ status: 200, description: 'Update a Project.' })
-  @Put(':id')
-  @ApiBody({ type: ProjetoDto })
-  update(@Param('id') id: number, @Body() projeto: Projeto): Promise<Projeto> {
-    return this.projetoService.update(id, projeto);
   }
 }
