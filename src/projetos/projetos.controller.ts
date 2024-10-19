@@ -1,17 +1,17 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
+  Get,
+  Param,
+  Post,
   UseGuards,
 } from '@nestjs/common';
-import { ProjetoService } from './projetos.service';
-import { Projeto } from './projetos.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { ProjetoDto } from './dto/projetos.dto';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { ProjetoDto } from './dto/projetos.dto';
+import { Projeto } from './projetos.entity';
+import { ProjetoService } from './projetos.service';
 
 @ApiTags('projetos')
 @Controller('projetos')
