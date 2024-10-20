@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Projeto } from './projetos.entity';
 
@@ -14,19 +15,23 @@ export class ProjetoService {
     return this.projetoRepository.find();
   }
 
-  findOne(id: any): Promise<Projeto> {
-    return this.projetoRepository.findOneBy({ id });
+  findOne(_id: string): Promise<Projeto> {
+    const objectId = new ObjectId(_id);
+    return this.projetoRepository.findOneBy({ _id: objectId });
   }
 
   async create(projeto: Projeto): Promise<Projeto> {
     return this.projetoRepository.save(projeto);
   }
 
-  async update(id: any, projeto: Projeto): Promise<Projeto> {
-    const existingProjeto = await this.projetoRepository.findOneBy({ id });
+  async update(_id: string, projeto: Projeto): Promise<Projeto> {
+    const objectId = new ObjectId(_id);
+    const existingProjeto = await this.projetoRepository.findOneBy({
+      _id: objectId,
+    });
 
     if (!existingProjeto) {
-      throw new NotFoundException(`Projeto with ID ${id} not found`);
+      throw new NotFoundException(`Projeto with ID ${_id} not found`);
     }
 
     const updatedProjeto = this.projetoRepository.merge(
@@ -37,11 +42,12 @@ export class ProjetoService {
     return this.projetoRepository.save(updatedProjeto);
   }
 
-  async remove(id: number): Promise<void> {
-    const deleteResult = await this.projetoRepository.delete(id);
+  async remove(_id: string): Promise<void> {
+    const objectId = new ObjectId(_id);
+    const deleteResult = await this.projetoRepository.delete({ _id: objectId });
 
     if (deleteResult.affected === 0) {
-      throw new NotFoundException(`Projeto with ID ${id} not found`);
+      throw new NotFoundException(`Projeto with ID ${_id} not found`);
     }
   }
 }
