@@ -3,7 +3,7 @@ import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
 @Entity('Projetos')
 export class Projeto {
   @ObjectIdColumn()
-  id: ObjectId;
+  _id: ObjectId;
 
   @Column()
   img: string;
@@ -16,7 +16,7 @@ export class Projeto {
 
   @Column()
   description: string;
-  
+
   @Column()
   link: string;
 }

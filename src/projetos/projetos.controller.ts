@@ -1,17 +1,16 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
-import { ProjetoService } from './projetos.service';
-import { Projeto } from './projetos.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProjetoDto } from './dto/projetos.dto';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { Projeto } from './projetos.entity';
+import { ProjetoService } from './projetos.service';
 
 @ApiTags('projetos')
 @Controller('projetos')
@@ -24,12 +23,12 @@ export class ProjetoController {
     return this.projetoService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get User by Id' })
-  @UseGuards(LocalAuthGuard)
+  @ApiOperation({ summary: 'Get Project by Id' })
+  //@UseGuards(LocalAuthGuard)
   @ApiResponse({ status: 200, description: 'Returns projetos summaries.' })
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Projeto> {
-    return this.projetoService.findOne(+id);
+    return this.projetoService.findOne(id);
   }
 
   @ApiOperation({ summary: 'Add Project' })
@@ -40,10 +39,18 @@ export class ProjetoController {
     return this.projetoService.create(projeto);
   }
 
+  @ApiOperation({ summary: 'Update Project' })
+  @ApiResponse({ status: 200, description: 'Update a Project.' })
+  @Put(':id')
+  @ApiBody({ type: ProjetoDto })
+  update(@Param('id') id: string, @Body() projeto: Projeto): Promise<Projeto> {
+    return this.projetoService.update(id, projeto);
+  }
+
   @ApiOperation({ summary: 'Delete Project by Id' })
   @ApiResponse({ status: 200, description: 'Delete a Project.' })
   @Delete(':id')
   remove(@Param('id') id: string): Promise<void> {
-    return this.projetoService.remove(+id);
+    return this.projetoService.remove(id);
   }
 }

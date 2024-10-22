@@ -1,8 +1,15 @@
-import { Controller, Request, Post, UseGuards, Body, Logger } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Logger,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { LoginDto } from './dto/login.dto';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,7 +34,10 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('validate')
   async validateUser(@Body() loginDto: LoginDto): Promise<any> {
-    const user = await this.authService.validateUser(loginDto.usuario, loginDto.senha);
+    const user = await this.authService.validateUser(
+      loginDto.usuario,
+      loginDto.senha,
+    );
     if (user) {
       return user;
     }

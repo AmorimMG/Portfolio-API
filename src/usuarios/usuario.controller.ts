@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
-import { UsuarioService } from './usuario.service';
-import { Usuario } from './usuario.entity';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
-import { UsuarioDto } from './dto/usuario.dto';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { UsuarioDto } from './dto/usuario.dto';
+import { Usuario } from './usuario.entity';
+import { UsuarioService } from './usuario.service';
 
 @ApiTags('usuarios')
 @Controller('usuarios')

@@ -1,5 +1,5 @@
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Controller, Get } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SpotifyService } from './spotify.service';
 
 @ApiTags('spotify')

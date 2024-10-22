@@ -1,4 +1,9 @@
-import { Injectable, ExecutionContext, UnauthorizedException, Logger } from '@nestjs/common';
+import {
+  ExecutionContext,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
@@ -11,7 +16,7 @@ export class LocalAuthGuard extends AuthGuard('local') {
   }
 
   handleRequest(err, user, info) {
-    console.log('Handle Request:', { user, err, info }); // Add debug statement
+    console.log('Handle Request:', { user, err, info });
     if (err || !user) {
       this.logger.error(`Authentication failed: ${err || 'User not found'}`);
       throw err || new UnauthorizedException();
