@@ -5,8 +5,13 @@ import { typeOrmConfig } from './config/typeorm';
 
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { ChatModule } from './chat/chat.module';
 import { ProjetoModule } from './projetos/projetos.module';
+import { ShutdownModule } from './shutdown/shutdown.module';
+import { SystemInfoModule } from './system-info/system-info.module';
 import { UsuarioModule } from './usuarios/usuario.module';
+import { VncModule } from './vnc/vnc.module';
+import { WakeOnLanModule } from './wol/wake-on-lan.module';
 
 import { AnilistController } from './anilist/anilist.controller';
 import { AnilistService } from './anilist/anilist.service';
@@ -33,6 +38,11 @@ import { SteamService } from './steam/steam.service';
     AuthModule,
     UsuarioModule,
     ProjetoModule,
+    WakeOnLanModule,
+    ShutdownModule,
+    SystemInfoModule,
+    VncModule,
+    ChatModule
   ],
   controllers: [
     AppController,

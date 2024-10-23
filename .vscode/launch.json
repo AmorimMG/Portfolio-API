@@ -7,7 +7,7 @@
             "request": "launch",
             "runtimeExecutable": "doppler",
             "runtimeArgs": ["run", "--", "npm","start"],
-            "cwd": "C:/Projetos/Portfolio-API",
+            "cwd": "C:/Projetos/GithubPages/Portfolio-API",
             "envFile": "${workspaceFolder}/.env",
             "outputCapture": "std",
             "skipFiles": ["<node_internals>/**"]
