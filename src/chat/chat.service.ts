@@ -35,7 +35,7 @@ export class ChatService {
       if (response.data && response.data.candidates && response.data.candidates.length > 0) {
         const candidateContent = response.data.candidates[0].content.parts[0].text;
         
-        return candidateContent; // Return the candidate content
+        return candidateContent;
       } else {
         throw new HttpException('Unexpected response structure', HttpStatus.INTERNAL_SERVER_ERROR);
       }
