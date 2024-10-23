@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as bcrypt from 'bcrypt';
+import { ObjectId } from 'mongodb';
 import { Repository } from 'typeorm';
 import { Usuario } from './usuario.entity';
 
 @Injectable()
 export class UsuarioService {
+  private readonly logger = new Logger(UsuarioService.name);
   constructor(
     @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
@@ -15,21 +16,24 @@ export class UsuarioService {
     return this.usuarioRepository.find();
   }
 
-  findOne(id: any): Promise<Usuario> {
-    return this.usuarioRepository.findOneBy({ id });
+  async findByUser(usuario: string): Promise<Usuario | undefined> {
+    this.logger.log('Query for user:', usuario);
+    const user = await this.usuarioRepository.findOneBy({ usuario });
+    this.logger.log('User found:', user);
+    return user;
   }
 
-  async findByUser(usuario: string): Promise<Usuario | undefined> {
-    return this.usuarioRepository.findOne({ where: { usuario } });
+  async findOne(_id: any): Promise<Usuario> {
+    const objectId = new ObjectId(_id);
+    return this.usuarioRepository.findOneBy({ _id: objectId });
   }
 
   async create(usuario: Usuario): Promise<Usuario> {
-    const hashedPassword = await bcrypt.hash(usuario.senha, 10);
-    const userToSave = { ...usuario, senha: hashedPassword };
-    return this.usuarioRepository.save(userToSave);
+    return this.usuarioRepository.save(usuario);
   }
 
-  async remove(id: number): Promise<void> {
-    await this.usuarioRepository.delete(id);
+  async remove(_id: any): Promise<void> {
+    const objectId = new ObjectId(_id);
+    await this.usuarioRepository.delete({ _id: objectId });
   }
 }

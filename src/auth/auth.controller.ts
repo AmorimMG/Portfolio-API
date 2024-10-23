@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  HttpException,
   Logger,
   Post,
   Request,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -30,17 +32,22 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Validate User' })
   @ApiResponse({ status: 200, description: 'Returns User.' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
   @ApiBody({ type: LoginDto })
   @UseGuards(LocalAuthGuard)
   @Post('validate')
   async validateUser(@Body() loginDto: LoginDto): Promise<any> {
-    const user = await this.authService.validateUser(
-      loginDto.usuario,
-      loginDto.senha,
-    );
-    if (user) {
+    try {
+      const user = await this.authService.validateUser(
+        loginDto.usuario,
+        loginDto.senha,
+      );
       return user;
+    } catch (error) {
+      if (error instanceof UnauthorizedException) {
+        throw new HttpException(error.message, error.getStatus());
+      }
+      throw error;
     }
-    return null;
   }
 }

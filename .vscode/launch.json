@@ -1,0 +1,63 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "API",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "doppler",
+            "runtimeArgs": ["run", "--", "npm","start"],
+            "cwd": "C:/Projetos/Portfolio-API",
+            "envFile": "${workspaceFolder}/.env",
+            "outputCapture": "std",
+            "skipFiles": ["<node_internals>/**"]
+        },
+        {
+            "command": "npm run dev",
+            "name": "Front",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "name": "threeJS svelte",
+            "command": "npm run dev",
+            "request": "launch",
+            "type": "node-terminal",
+            "cwd": "C:/Projetos/GithubPages/the-next-gallery-main"
+        },
+        {
+            "name": "cypress",
+            "command": "npm run cypress",
+            "request": "launch",
+            "type": "node-terminal"
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Chrome against localhost",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}/src",
+            "breakOnLoad": true,
+            "sourceMaps": true,
+            "skipFiles": ["<node_internals>/**"],
+            "trace": true,
+            "runtimeArgs": ["--remote-debugging-port=9222"],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Aider",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "aider --browser --model gemini/gemini-1.5-pro-exp-0827",
+            "env": {
+                "SHELL": "/bin/bash"
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Rodar tudo",
+            "configurations": ["API", "Front", "Aider"]
+        }
+    ]
+}

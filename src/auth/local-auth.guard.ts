@@ -16,7 +16,8 @@ export class LocalAuthGuard extends AuthGuard('local') {
   }
 
   handleRequest(err, user, info) {
-    console.log('Handle Request:', { user, err, info });
+    this.logger.log('Handle Request:', { user, err, info }); // Added logging
+    this.logger.log('user:', { user });
     if (err || !user) {
       this.logger.error(`Authentication failed: ${err || 'User not found'}`);
       throw err || new UnauthorizedException();
