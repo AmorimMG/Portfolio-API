@@ -4,7 +4,6 @@ import * as os from 'os';
 
 @Injectable()
 export class SystemInfoService {
-
   // Function to gather system information
   async getSystemInfo() {
     const platform = os.platform();
@@ -16,7 +15,7 @@ export class SystemInfoService {
     const totalMemory = os.totalmem();
     const freeMemory = os.freemem();
     const networkInterfaces = os.networkInterfaces();
-    
+
     // Get disk space usage (you can replace "/" with the relevant path for Windows or other mounts)
     const diskInfo = await disk.check('/'); // "/" is root for Linux/macOS
 

@@ -3,7 +3,7 @@ import axios from 'axios';
 
 @Injectable()
 export class ChatService {
-  private readonly apiKey = process.env["AI_KEY"];
+  private readonly apiKey = process.env['AI_KEY'];
 
   async sendMessageToGemini(prompt: string, context: string) {
     const requestBody = {
@@ -32,12 +32,20 @@ export class ChatService {
         },
       );
 
-      if (response.data && response.data.candidates && response.data.candidates.length > 0) {
-        const candidateContent = response.data.candidates[0].content.parts[0].text;
-        
+      if (
+        response.data &&
+        response.data.candidates &&
+        response.data.candidates.length > 0
+      ) {
+        const candidateContent =
+          response.data.candidates[0].content.parts[0].text;
+
         return candidateContent;
       } else {
-        throw new HttpException('Unexpected response structure', HttpStatus.INTERNAL_SERVER_ERROR);
+        throw new HttpException(
+          'Unexpected response structure',
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
       }
     } catch (error) {
       throw new HttpException(
