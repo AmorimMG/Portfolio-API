@@ -19,4 +19,7 @@ export class Projeto {
 
   @Column()
   link: string;
+
+  @Column('simple-array')
+  languages: string[];
 }
