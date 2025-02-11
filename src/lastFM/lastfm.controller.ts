@@ -26,4 +26,24 @@ export class LastFMController {
       throw error;
     }
   }
+
+  @ApiOperation({ summary: 'Get LastFM User Data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Returns LastFM weekly User Data.',
+  })
+  @ApiQuery({
+    name: 'username',
+    description: 'LastFM Username',
+    required: true,
+  })
+  @Get('/user')
+  async getUserData(@Query('username') username: string): Promise<any> {
+    try {
+      return await this.lastFMService.getUserData(username);
+    } catch (error) {
+      console.error('Error fetching LastFM User Data:', error);
+      throw error;
+    }
+  }
 }

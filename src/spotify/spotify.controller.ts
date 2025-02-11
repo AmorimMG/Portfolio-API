@@ -1,11 +1,17 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SpotifyService } from './spotify.service';
 
 @ApiTags('spotify')
 @Controller('spotify')
 export class SpotifyController {
-  constructor(private spotifyService: SpotifyService) {}
+  constructor(private readonly spotifyService: SpotifyService) {}
 
   @ApiOperation({ summary: 'Receives Spotify Data' })
   @ApiResponse({ status: 200, description: 'Returns Data from Spotify.' })
@@ -34,5 +40,29 @@ export class SpotifyController {
   @Get('/refresh_token')
   async refreshToken(): Promise<any> {
     return this.spotifyService.refreshAccessToken();
+  }
+
+  @Post('play')
+  @HttpCode(HttpStatus.OK)
+  async play(): Promise<void> {
+    await this.spotifyService.play('spotify:album:5ht7ItJgpBH7W6vJ5BqpPr');
+  }
+
+  @Post('pause')
+  @HttpCode(HttpStatus.OK)
+  async pause(): Promise<void> {
+    await this.spotifyService.pause();
+  }
+
+  @Post('next')
+  @HttpCode(HttpStatus.OK)
+  async skipToNext(): Promise<void> {
+    await this.spotifyService.skipToNext();
+  }
+
+  @Post('previous')
+  @HttpCode(HttpStatus.OK)
+  async skipToPrevious(): Promise<void> {
+    await this.spotifyService.skipToPrevious();
   }
 }

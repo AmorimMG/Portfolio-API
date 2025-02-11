@@ -6,15 +6,30 @@ import axios from 'axios';
 export class SpotifyService {
   constructor(private configService: ConfigService) {}
 
-  async getAccessToken(): Promise<string | null> {
-    try {
-      const clientId = this.configService.get<string>('SPOTIFY_CLIENT_ID');
-      const clientSecret = this.configService.get<string>('SPOTIFY_SECRET');
-      const redirect_uri = 'localhost:4000';
+  private readonly clientId =
+    this.configService.get<string>('SPOTIFY_CLIENT_ID');
+  private readonly clientSecret =
+    this.configService.get<string>('SPOTIFY_SECRET');
+  private readonly redirectUri = 'http://localhost:4000/callback';
 
+  getAuthorizationUrl(): string {
+    const scopes = [
+      'user-read-currently-playing',
+      'user-read-recently-played',
+      'user-modify-playback-state',
+      'user-read-playback-state',
+      'streaming',
+      'user-read-private',
+    ].join('%20');
+
+    return `https://accounts.spotify.com/authorize?response_type=code&client_id=${this.clientId}&scope=${scopes}&redirect_uri=${encodeURIComponent(this.redirectUri)}`;
+  }
+
+  async exchangeCodeForToken(authCode: string): Promise<any> {
+    try {
       const response = await axios.post(
         'https://accounts.spotify.com/api/token',
-        `grant_type=client_credentials&client_id=${clientId}&client_secret=${clientSecret}&scope=user-read-currently-playing%20user-read-recently-played&redirect_uri=${redirect_uri}`,
+        `grant_type=authorization_code&code=${authCode}&redirect_uri=${this.redirectUri}&client_id=${this.clientId}&client_secret=${this.clientSecret}`,
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -22,22 +37,20 @@ export class SpotifyService {
         },
       );
 
-      if (response.data && response.data.access_token) {
-        return response.data.access_token;
+      if (response.data) {
+        const { access_token, refresh_token } = response.data;
+        return { accessToken: access_token, refreshToken: refresh_token };
       } else {
-        console.error('Failed to fetch access token from Spotify API');
-        return null;
+        throw new Error('Failed to exchange code for token');
       }
     } catch (error) {
-      console.error('Error fetching access token:', error);
-      return null;
+      console.error('Error exchanging code for token:', error);
+      throw error;
     }
   }
 
   async refreshAccessToken(): Promise<string | null> {
     try {
-      const clientId = this.configService.get<string>('SPOTIFY_CLIENT_ID');
-      const clientSecret = this.configService.get<string>('SPOTIFY_SECRET');
       const refreshToken = this.configService.get<string>(
         'SPOTIFY_REFRESH_TOKEN',
       );
@@ -46,7 +59,7 @@ export class SpotifyService {
         url: 'https://accounts.spotify.com/api/token',
         headers: {
           'content-type': 'application/x-www-form-urlencoded',
-          Authorization: `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString('base64')}`,
+          Authorization: `Basic ${Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64')}`,
         },
         data: `grant_type=refresh_token&refresh_token=${refreshToken}`,
       };
@@ -66,7 +79,6 @@ export class SpotifyService {
       return null;
     }
   }
-
   async getCurrentTrack(): Promise<any | null> {
     try {
       const accessToken = await this.refreshAccessToken();
@@ -151,6 +163,92 @@ export class SpotifyService {
     } catch (error) {
       console.error('Error fetching current and last tracks:', error);
       return { currentTrack: null, lastTrack: null };
+    }
+  }
+
+  async play(contextUri: string = ''): Promise<boolean> {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return false;
+
+      // If contextUri is not provided, use an empty object or another fallback.
+      const body = contextUri ? { context_uri: contextUri } : {};
+
+      await axios.put(
+        'https://api.spotify.com/v1/me/player/play',
+        body, // Pass the body with contextUri if available
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Error playing track:', error);
+      return false;
+    }
+  }
+
+  async pause() {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      await axios.put(
+        'https://api.spotify.com/v1/me/player/pause',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+    } catch (error) {
+      console.error('Error pausing track:', error);
+    }
+  }
+
+  async skipToNext(): Promise<boolean> {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return false;
+
+      await axios.post(
+        'https://api.spotify.com/v1/me/player/next',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Error skipping to next track:', error);
+      return false;
+    }
+  }
+
+  async skipToPrevious(): Promise<boolean> {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return false;
+
+      await axios.post(
+        'https://api.spotify.com/v1/me/player/previous',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Error skipping to previous track:', error);
+      return false;
     }
   }
 }

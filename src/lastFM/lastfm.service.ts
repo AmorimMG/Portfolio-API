@@ -18,4 +18,17 @@ export class LastFMService {
       throw error;
     }
   }
+
+  async getUserData(username: string): Promise<any> {
+    try {
+      const apiKey = this.configService.get<string>('LASTFM_APIKEY');
+      const response = await axios.get(
+        `http://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${username}&api_key=${apiKey}&format=json`,
+      );
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching LastFM User Data:', error);
+      throw error;
+    }
+  }
 }
