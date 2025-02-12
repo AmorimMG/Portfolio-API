@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -6,8 +7,17 @@ import {
   Param,
   Post,
   Put,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ProjetoDto } from './dto/projetos.dto';
 import { Projeto } from './projetos.entity';
 import { ProjetoService } from './projetos.service';
@@ -16,41 +26,107 @@ import { ProjetoService } from './projetos.service';
 @Controller('projetos')
 export class ProjetoController {
   constructor(private readonly projetoService: ProjetoService) {}
-  @ApiOperation({ summary: 'Get projetos' })
-  @ApiResponse({ status: 200, description: 'Returns projetos summaries.' })
+
+  @ApiOperation({ summary: 'Get all projects' })
+  @ApiResponse({ status: 200, description: 'Returns all projects.' })
   @Get()
-  findAll(): Promise<Projeto[]> {
+  async findAll(): Promise<Projeto[]> {
     return this.projetoService.findAll();
   }
 
-  @ApiOperation({ summary: 'Get Project by Id' })
-  //@UseGuards(LocalAuthGuard)
-  @ApiResponse({ status: 200, description: 'Returns projetos summaries.' })
+  @ApiOperation({ summary: 'Get project by ID' })
+  @ApiResponse({ status: 200, description: 'Returns a project by ID.' })
+  @ApiResponse({ status: 404, description: 'Project not found.' })
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<Projeto> {
+  async findOne(@Param('id') id: string): Promise<Projeto> {
     return this.projetoService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Add Project' })
-  @ApiResponse({ status: 200, description: 'Add new Project.' })
   @Post()
-  @ApiBody({ type: ProjetoDto })
-  create(@Body() projeto: Projeto): Promise<Projeto> {
-    return this.projetoService.create(projeto);
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Upload an image along with project details',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+        title: { type: 'string' },
+        subtitle: { type: 'string' },
+        description: { type: 'string' },
+        link: { type: 'string' },
+        linguagens: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
+    },
+  })
+  async create(
+    @Body() projetoDto: ProjetoDto,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<Projeto> {
+    // Check if file is received
+    if (!file) {
+      console.log('File is missing or not uploaded correctly');
+      throw new BadRequestException('File is required');
+    }
+
+    console.log('Received file:', file); // Log the file object
+
+    return this.projetoService.create(projetoDto, file);
   }
 
-  @ApiOperation({ summary: 'Update Project' })
-  @ApiResponse({ status: 200, description: 'Update a Project.' })
+  @ApiOperation({ summary: 'Update an existing project' })
+  @ApiResponse({ status: 200, description: 'Project updated successfully.' })
+  @ApiResponse({ status: 404, description: 'Project not found.' })
   @Put(':id')
-  @ApiBody({ type: ProjetoDto })
-  update(@Param('id') id: string, @Body() projeto: Projeto): Promise<Projeto> {
-    return this.projetoService.update(id, projeto);
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data') // Indicate the form data type
+  @ApiBody({
+    description: 'Update a project with a new file',
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary', // The file format
+        },
+        title: { type: 'string' },
+        subtitle: { type: 'string' },
+        description: { type: 'string' },
+        link: { type: 'string' },
+        linguagens: {
+          type: 'array',
+          items: { type: 'string' },
+        },
+      },
+    },
+  })
+  async update(
+    @Param('id') id: string,
+    @Body() projetoDto: ProjetoDto,
+    @UploadedFile() file: Express.Multer.File, // Handle the uploaded file
+  ): Promise<Projeto> {
+    // Check if file is received
+    if (!file) {
+      console.log('File is missing or not uploaded correctly');
+      throw new BadRequestException('File is required');
+    }
+
+    console.log('Received file for update:', file); // Log the file object
+
+    return this.projetoService.update(id, projetoDto, file); // Pass file to service
   }
 
-  @ApiOperation({ summary: 'Delete Project by Id' })
-  @ApiResponse({ status: 200, description: 'Delete a Project.' })
+  @ApiOperation({ summary: 'Delete a project by ID' })
+  @ApiResponse({ status: 200, description: 'Project deleted successfully.' })
+  @ApiResponse({ status: 404, description: 'Project not found.' })
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
+  async remove(@Param('id') id: string): Promise<void> {
     return this.projetoService.remove(id);
   }
 }

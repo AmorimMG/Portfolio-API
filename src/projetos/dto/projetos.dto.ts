@@ -4,7 +4,7 @@ import { IsString } from 'class-validator';
 export class ProjetoDto {
   @ApiProperty({ example: 'img/local/example' })
   @IsString()
-  img: string;
+  img?: string;
 
   @ApiProperty({ example: 'im a title' })
   @IsString()
@@ -21,4 +21,11 @@ export class ProjetoDto {
   @ApiProperty({ example: 'http://amorim.pro' })
   @IsString()
   link: string;
+
+  @ApiProperty({
+    example: ['TypeScript', 'NestJS', 'MongoDB'],
+    description: 'Linguagens utilizadas no projeto',
+    type: [String],
+  })
+  linguagens: string[];
 }

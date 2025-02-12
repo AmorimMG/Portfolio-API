@@ -1,11 +1,14 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { MulterModule } from '@nestjs/platform-express';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm';
 
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ChatModule } from './chat/chat.module';
+import { CloudinaryConfig } from './cloudinary/cloudinary.config';
+import { LinguagemModule } from './linguagens/linguagens.module';
 import { ProjetoModule } from './projetos/projetos.module';
 import { ShutdownModule } from './shutdown/shutdown.module';
 import { SystemInfoModule } from './system-info/system-info.module';
@@ -42,7 +45,11 @@ import { SteamService } from './steam/steam.service';
     ShutdownModule,
     SystemInfoModule,
     VncModule,
-    ChatModule
+    ChatModule,
+    LinguagemModule,
+    MulterModule.register({
+      dest: './uploads',
+    }),
   ],
   controllers: [
     AppController,
@@ -63,6 +70,12 @@ import { SteamService } from './steam/steam.service';
     SteamService,
     AnilistService,
     GithubService,
+    {
+      provide: 'Cloudinary',
+      inject: [ConfigService],
+      useFactory: CloudinaryConfig,
+    },
   ],
+  exports: ['Cloudinary'],
 })
 export class AppModule {}
