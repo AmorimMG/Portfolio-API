@@ -1,5 +1,6 @@
 import { Controller, Get, Query } from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { LastFMService } from './lastfm.service';
 
 @ApiTags('lastfm')
@@ -17,6 +18,7 @@ export class LastFMController {
     description: 'LastFM Username',
     required: true,
   })
+  @Public()
   @Get()
   async getWeeklyTrackChart(@Query('username') username: string): Promise<any> {
     try {
@@ -37,6 +39,7 @@ export class LastFMController {
     description: 'LastFM Username',
     required: true,
   })
+  @Public()
   @Get('/user')
   async getUserData(@Query('username') username: string): Promise<any> {
     try {

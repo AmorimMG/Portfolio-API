@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { ChatService } from './chat.service';
 
 @ApiTags('chat')
@@ -8,6 +9,7 @@ export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @ApiOperation({ summary: 'Post a message to the chatbot' })
+  @Public()
   @Post('send')
   @ApiBody({
     schema: {

@@ -6,6 +6,7 @@ import {
   Post
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { SpotifyService } from './spotify.service';
 
 @ApiTags('spotify')
@@ -15,6 +16,7 @@ export class SpotifyController {
 
   @ApiOperation({ summary: 'Receives Spotify Data' })
   @ApiResponse({ status: 200, description: 'Returns Data from Spotify.' })
+  @Public()
   @Get()
   async getSpotifyData(): Promise<any> {
     try {

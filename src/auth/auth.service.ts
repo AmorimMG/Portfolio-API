@@ -14,24 +14,29 @@ export class AuthService {
 
   async validateUser(usuario: string, senha: string): Promise<any> {
     const user = await this.usuarioService.findByUser(usuario);
-    this.logger.log('Found User:', user);
-    if (user) {
-      const passwordMatch = await bcrypt.compare(senha, user.senha);
-      this.logger.log('Password Match:', passwordMatch);
-      if (passwordMatch) {
-        return user;
-      } else {
-        throw new UnauthorizedException('Incorrect password');
-      }
+    if (!user) {
+      throw new UnauthorizedException('User not found');
     }
-    throw new UnauthorizedException('User not found');
+
+    const passwordMatch = await bcrypt.compare(senha, user.senha);
+    if (!passwordMatch) {
+      throw new UnauthorizedException('Incorrect password');
+    }
+
+    return user;
   }
 
   async login(user: any) {
-    const payload = { usuario: user.usuario, id: user._id.toString() }; // Changed to use user._id.toString()
+    if (!user || !user._id) {
+      throw new UnauthorizedException('Invalid user data');
+    }
+
+    const payload = { usuario: user.usuario, id: user._id.toString() };
     this.logger.log('Payload before token generation:', payload);
+
     return {
-      ...payload,
+      usuario: user.usuario,
+      id: user._id.toString(),
       access_token: this.jwtService.sign(payload),
     };
   }

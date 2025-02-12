@@ -18,6 +18,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { ProjetoDto } from './dto/projetos.dto';
 import { Projeto } from './projetos.entity';
 import { ProjetoService } from './projetos.service';
@@ -29,6 +30,7 @@ export class ProjetoController {
 
   @ApiOperation({ summary: 'Get all projects' })
   @ApiResponse({ status: 200, description: 'Returns all projects.' })
+  @Public()
   @Get()
   async findAll(): Promise<Projeto[]> {
     return this.projetoService.findAll();
