@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { BadRequestException, Controller, Get, HttpCode, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { SpotifyService } from './spotify.service';
@@ -80,5 +80,25 @@ export class SpotifyController {
   async getAuthUrl(): Promise<{ url: string }> {
     const url = this.spotifyService.getAuthorizationUrl();
     return { url };
+  }
+
+  @Public()
+  @Get('callback')
+  async handleCallback(@Query('code') code: string): Promise<any> {
+    if (!code) {
+      throw new BadRequestException('Authorization code is required');
+    }
+    
+    try {
+      const tokens = await this.spotifyService.exchangeCodeForToken(code);
+      console.log('Refresh token:', tokens.refreshToken); // Save this token
+      return { 
+        message: 'Authorization successful',
+        refreshToken: tokens.refreshToken 
+      };
+    } catch (error) {
+      console.error('Error in callback:', error);
+      throw new BadRequestException('Failed to exchange authorization code');
+    }
   }
 }
