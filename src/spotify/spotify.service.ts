@@ -10,7 +10,7 @@ export class SpotifyService {
     this.configService.get<string>('SPOTIFY_CLIENT_ID');
   private readonly clientSecret =
     this.configService.get<string>('SPOTIFY_SECRET');
-  private readonly redirectUri = 'https://localhost:4000/callback';
+  private readonly redirectUri = 'https://amorim.pro/callback';
 
   getAuthorizationUrl(): string {
     const scopes = [
