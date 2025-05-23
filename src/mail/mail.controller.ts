@@ -1,5 +1,6 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { EmailDto } from './email.dto';
 import { MailService } from './mail.service';
 
@@ -11,6 +12,7 @@ export class MailController {
   @ApiOperation({ summary: 'Send email' })
   @ApiResponse({ status: 200, description: 'Returns Email sent successfully.' })
   @ApiBody({ type: EmailDto, description: 'Email object' })
+  @Public()
   @Post('/send-email')
   async sendEmail(@Body() emailDto: EmailDto): Promise<string> {
     const { name, email, message } = emailDto;

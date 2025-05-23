@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { DiscordService } from './discord.service';
 
 @ApiTags('discord')
@@ -9,6 +10,7 @@ export class DiscordController {
 
   @ApiOperation({ summary: 'Get Discord User Info' })
   @ApiResponse({ status: 200, description: 'Returns Discord user info.' })
+  @Public()
   @Get()
   async getUserInfo(): Promise<any> {
     try {

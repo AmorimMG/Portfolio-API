@@ -10,7 +10,7 @@ export class SpotifyService {
     this.configService.get<string>('SPOTIFY_CLIENT_ID');
   private readonly clientSecret =
     this.configService.get<string>('SPOTIFY_SECRET');
-  private readonly redirectUri = 'http://localhost:4000/callback';
+  private readonly redirectUri = 'https://api.amorim.pro/spotify/callback';
 
   getAuthorizationUrl(): string {
     const scopes = [
@@ -20,9 +20,17 @@ export class SpotifyService {
       'user-read-playback-state',
       'streaming',
       'user-read-private',
-    ].join('%20');
+      'app-remote-control',
+      'playlist-read-private',
+      'playlist-modify-public',
+      'playlist-modify-private',
+    ].join(' ');
 
-    return `https://accounts.spotify.com/authorize?response_type=code&client_id=${this.clientId}&scope=${scopes}&redirect_uri=${encodeURIComponent(this.redirectUri)}`;
+    return `https://accounts.spotify.com/authorize?response_type=code&client_id=${
+      this.clientId
+    }&scope=${encodeURIComponent(scopes)}&redirect_uri=${encodeURIComponent(
+      this.redirectUri,
+    )}`;
   }
 
   async exchangeCodeForToken(authCode: string): Promise<any> {
@@ -191,9 +199,14 @@ export class SpotifyService {
     }
   }
 
-  async pause() {
+  async pause(): Promise<boolean> {
     try {
       const accessToken = await this.refreshAccessToken();
+      if (!accessToken) {
+        console.error('Failed to obtain access token');
+        return false;
+      }
+
       await axios.put(
         'https://api.spotify.com/v1/me/player/pause',
         {},
@@ -201,10 +214,19 @@ export class SpotifyService {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        },
+        }
       );
+
+      return true;
     } catch (error) {
-      console.error('Error pausing track:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Error pausing track:', {
+          status: error.response?.status,
+          message: error.response?.data?.error?.message,
+          data: error.response?.data,
+        });
+      }
+      return false;
     }
   }
 
@@ -248,6 +270,38 @@ export class SpotifyService {
       return true;
     } catch (error) {
       console.error('Error skipping to previous track:', error);
+      return false;
+    }
+  }
+
+  private async verifyToken(accessToken: string): Promise<boolean> {
+    try {
+      const response = await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      return response.status === 200;
+    } catch (error) {
+      console.error('Token verification failed:', error.message);
+      return false;
+    }
+  }
+
+  private async checkPermissions(): Promise<boolean> {
+    try {
+      const accessToken = await this.refreshAccessToken();
+      if (!accessToken) return false;
+
+      const response = await axios.get('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      return response.status === 200;
+    } catch (error) {
+      console.error('Permission check failed:', error.message);
       return false;
     }
   }

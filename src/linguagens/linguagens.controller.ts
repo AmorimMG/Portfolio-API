@@ -1,13 +1,14 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 import { LinguagemDto } from './dto/linguagens.dto';
 import { Linguagem } from './linguagens.entity';
 import { LinguagemService } from './linguagens.service';
@@ -19,6 +20,7 @@ export class LinguagemController {
 
   @ApiOperation({ summary: 'Obter todas as linguagens' })
   @ApiResponse({ status: 200, description: 'Lista de linguagens' })
+  @Public()
   @Get()
   findAll(): Promise<Linguagem[]> {
     return this.linguagemService.findAll();
