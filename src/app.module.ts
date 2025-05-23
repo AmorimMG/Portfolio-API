@@ -24,6 +24,8 @@ import { DiscordController } from './discord/discord.controller';
 import { DiscordService } from './discord/discord.service';
 import { GithubController } from './github/github.controller';
 import { GithubService } from './github/github.service';
+import { IgdbController } from './igdb/igdb.controller';
+import { IgdbService } from './igdb/igdb.service';
 import { LastFMController } from './lastFM/lastfm.controller';
 import { LastFMService } from './lastFM/lastfm.service';
 import { MailController } from './mail/mail.controller';
@@ -35,7 +37,10 @@ import { SteamService } from './steam/steam.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
     HttpModule,
     TypeOrmModule.forRoot(typeOrmConfig),
     AuthModule,
@@ -55,6 +60,7 @@ import { SteamService } from './steam/steam.service';
     AppController,
     MailController,
     SpotifyController,
+    IgdbController,
     DiscordController,
     LastFMController,
     SteamController,
@@ -65,6 +71,7 @@ import { SteamService } from './steam/steam.service';
     AppService,
     MailService,
     SpotifyService,
+    IgdbService,
     DiscordService,
     LastFMService,
     SteamService,
